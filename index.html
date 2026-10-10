@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Point Cloud Viewer</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background: #fff; /* white page around a black 3D view, like the Sketchfab proof pages */
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  body {
+    display: flex;
+    flex-direction: column;
+  }
+  #viewer-header, #viewer-footer {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    height: 56px;
+    padding: 0 20px;
+    background: #fff;
+    border-bottom: 1px solid #e3e3e3;
+    box-sizing: border-box;
+  }
+  #viewer-footer {
+    border-bottom: none;
+    border-top: 1px solid #e3e3e3;
+    justify-content: center;
+    gap: 10px;
+  }
+  #viewer-title {
+    color: #222;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  #viewer-nav {
+    flex: 1;
+    /* placeholder — reserved space for future nav content */
+  }
+  .view-btn {
+    background: #f5f5f5;
+    color: #333;
+    border: 1px solid #d0d0d0;
+    border-radius: 4px;
+    padding: 6px 14px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .view-btn:hover {
+    background: #ebebeb;
+    color: #000;
+    border-color: #bbb;
+  }
+  .view-btn:active {
+    background: #e0e0e0;
+  }
+  #viewer-main {
+    flex: 1 1 auto;
+    position: relative;
+    min-height: 0;
+    /* White margin around the black 3D view. */
+    --margin-x: max(40px, 10vw);
+    --margin-y: 40px;
+  }
+  #viewer-canvas {
+    display: block;
+    position: absolute;
+    top: var(--margin-y);
+    left: var(--margin-x);
+    width: calc(100% - 2 * var(--margin-x));
+    height: calc(100% - 2 * var(--margin-y));
+    background: #000;
+  }
+  #status {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #ddd;
+    font-size: 16px;
+    letter-spacing: 0.02em;
+    text-align: center;
+    pointer-events: none;
+    user-select: none;
+  }
+  #status.error {
+    color: #ff6b6b;
+  }
+  #status {
+    max-width: 70vw;
+  }
+  #open-btn {
+    margin-top: 14px;
+    pointer-events: auto;
+  }
+  #status.hidden {
+    display: none;
+  }
+  /* Camera angle readout, toggled with the V key (for fine-tuning views). */
+  #view-readout {
+    position: absolute;
+    top: calc(var(--margin-y) + 10px);
+    left: calc(var(--margin-x) + 12px);
+    padding: 6px 9px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid #2a2a2a;
+    border-radius: 4px;
+    color: #bbb;
+    font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    white-space: pre;
+    pointer-events: none;
+    user-select: none;
+  }
+</style>
+</head>
+<body>
+  <header id="viewer-header">
+    <div id="viewer-title">Point Cloud Viewer</div>
+    <nav id="viewer-nav"></nav>
+  </header>
+
+  <main id="viewer-main">
+    <canvas id="viewer-canvas"></canvas>
+    <div id="view-readout" hidden></div>
+    <div id="status">
+      <div id="status-text">Loading&hellip;</div>
+      <button id="open-btn" class="view-btn" hidden>Open file&hellip;</button>
+      <input id="file-input" type="file" accept=".wrz,.wrl,.gz" hidden>
+    </div>
+  </main>
+
+  <footer id="viewer-footer">
+    <button class="view-btn" data-view="front">Front</button>
+    <button class="view-btn" data-view="back">Back</button>
+    <button class="view-btn" data-view="left">Left</button>
+    <button class="view-btn" data-view="right">Right</button>
+    <button class="view-btn" data-view="top">Top</button>
+    <button class="view-btn" data-view="bottom">Bottom</button>
+  </footer>
+
+  <!-- Classic scripts (not ES modules) so the page also works when opened from file:// -->
+  <script src="lib/pako.min.js"></script>
+  <script src="lib/three.classic.js"></script>
+  <script src="lib/OrbitControls.classic.js"></script>
+  <script src="vrmlParser.js?v=33"></script>
+  <script src="app.js?v=33"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+# Example/sample models stay local, not in the repository
+*.wrz
+*.wrl
+*.gz
+
+# Local tools and editor/assistant settings
+sfup_mac.pl
+.claude/
+.DS_Store
